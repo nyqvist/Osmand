@@ -103,6 +103,7 @@ public class CoordinateInputDialogFragment extends DialogFragment implements Osm
 	private final List<EditTextEx> editTexts = new ArrayList<>();
 	private CoordinateInputAdapter adapter;
 	private Snackbar snackbar;
+	private RecyclerView recyclerView;
 
 	private boolean lightTheme;
 	private boolean orientationPortrait;
@@ -373,7 +374,7 @@ public class CoordinateInputDialogFragment extends DialogFragment implements Osm
 			}
 		});
 		adapter = new CoordinateInputAdapter(getMyApplication(), getGpx());
-		final RecyclerView recyclerView = (RecyclerView) mainView.findViewById(R.id.markers_recycler_view);
+		recyclerView = (RecyclerView) mainView.findViewById(R.id.markers_recycler_view);
 		recyclerView.setLayoutManager(new LinearLayoutManager(ctx));
 		recyclerView.setAdapter(adapter);
 		recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -424,6 +425,7 @@ public class CoordinateInputDialogFragment extends DialogFragment implements Osm
 			public void onClick(View view) {
 				addWptPt();
 				hasUnsavedChanges = true;
+				moveLastPointToTop();
 			}
 		});
 		
@@ -1086,6 +1088,15 @@ public class CoordinateInputDialogFragment extends DialogFragment implements Osm
 			mainView.findViewById(R.id.keyboard_divider).setVisibility(visibility);
 		} else {
 			mainView.findViewById(R.id.keyboard_layout).setVisibility(visibility);
+		}
+		if (show) {
+			moveLastPointToTop();
+		}
+	}
+
+	private void moveLastPointToTop() {
+		if ((adapter.getItemCount() > 1)) {
+			recyclerView.scrollToPosition(adapter.getItemCount() - 1);
 		}
 	}
 
